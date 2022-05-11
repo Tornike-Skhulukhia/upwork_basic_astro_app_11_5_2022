@@ -1,4 +1,4 @@
-# project for upwork to display some information in simple format
+# Small project for upwork to display astronomy-related information in simple format
 
 # installation
 . install libraries  
