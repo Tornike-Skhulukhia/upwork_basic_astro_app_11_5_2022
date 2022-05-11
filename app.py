@@ -76,6 +76,7 @@ def _get_current_time_in(country, city):
         else:
             res = datetime.today() + timedelta(hours=12)
 
+    print(res, city)
     return res
 
 
@@ -88,20 +89,24 @@ app.layout = html.Div(
             style={"textAlign": "center"},
         ),
         html.Div(
-            id="",
+            id="content",
             children=[
-                dcc.Dropdown(
-                    list(COUNTRIES_AND_CITIES.keys()),
-                    value=None,
-                    placeholder="Select Country",
-                    id="selected_country",
-                ),
-                html.Br(),
-                dcc.Dropdown(
-                    options=[],
-                    value=None,
-                    placeholder="Select City",
-                    id="selected_city",
+                html.Div(
+                    id="selections",
+                    children=[
+                        dcc.Dropdown(
+                            list(COUNTRIES_AND_CITIES.keys()),
+                            value=None,
+                            placeholder="Select Country",
+                            id="selected_country",
+                        ),
+                        dcc.Dropdown(
+                            options=[],
+                            value=None,
+                            placeholder="Select City",
+                            id="selected_city",
+                        ),
+                    ]
                 ),
                 html.Br(),
                 html.H1(id="current_selections_text", style={"textAlign": "center"}),
@@ -140,6 +145,8 @@ def update_selection_text(country, city):
     else:
         output_1_text = ""
 
+    # if city == "Zugdidi":
+    #     breakpoint()
     output_2_styles = _get_background_style_based_on_time(city_time)
 
     return output_1_text, output_2_styles
