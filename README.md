@@ -11,5 +11,5 @@ python3 -m pip install -r requirements.txt
 python3 app.py
 ```
 
-. check localhost:8050 to see simple application  
+. check http://localhost:8050/ to see simple application  
 
