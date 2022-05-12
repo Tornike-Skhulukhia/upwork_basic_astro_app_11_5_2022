@@ -1,10 +1,19 @@
-# change/add information here to make cities visible in dropdown
+# change/add data here if necessary
 CITIES_INFO = {
-    ### country, city : timezone_text
-    "India, Kavalur": "Asia/Kolkata",
-    "Georgia, Tbilisi": "Asia/Tbilisi",
-    "Kansas, United States": "US/Central",
+    "India, Kavalur": {
+        "timezone": "Asia/Kolkata",
+        "coordinates": ("12.5780° N", "78.8130° E"),
+    },
+    "Georgia, Tbilisi": {
+        "timezone": "Asia/Tbilisi",
+        "coordinates": ("41.7151° N", "44.8271° E"),
+    },
+    "Kansas, United States": {
+        "timezone": "US/Central",
+        "coordinates": ("39.0119° N", "98.4842° W"),
+    },
 }
+
 
 # change this text to make time formatted differenty
 # like instead of 12.31.2022 to show 31 December 2022

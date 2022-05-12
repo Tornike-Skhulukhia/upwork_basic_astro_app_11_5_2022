@@ -18,3 +18,26 @@ div[style*="background: black"] .Select-menu-outer * {
 h1 {
     text-align: center;
 }
+
+#visible_objects_div{
+    max-width: 70%;
+    margin: auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+}
+
+.visible_object_div > div{
+    /* text-align: center; */
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.visible_object_div{
+    margin-bottom: 50px;
+
+}
+
+.visible_object_div li{
+    color: "red";
+}

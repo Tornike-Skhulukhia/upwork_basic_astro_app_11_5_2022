@@ -1,3 +1,6 @@
+from dash import html
+
+
 def _get_background_style_based_on_time(datetime_obj):
     """
     get python datetime object(showing time in some place)
@@ -31,3 +34,40 @@ def _get_background_style_based_on_time(datetime_obj):
     }
 
     return styles
+
+
+def _get_visible_objects_web_elements_for_location(time, coordinates):
+    """
+    Get elements that are visible from given city and time
+    in a format that can be directly used in Dash to display it
+    """
+
+    info = {
+        "Stars": ["star 1", "star 12", "start 23", "star 24"],
+        "Planets": [],
+        "Satellite (man made)": ["sat 2", "sat 3"],
+        "Satellite (natural)": ["nat 4", "nat 5"],
+        "Constellation": [],
+    }
+
+    # populate result with actual data...
+
+    # convert result into format that Dash can display
+    result = []
+    for name, list_items in info.items():
+        # actual items
+        li_elements = []
+        for i in list_items:
+            li_elements.append(html.Li(i))
+
+        result.append(
+            html.Div(
+                children=[
+                    html.Div(name),
+                    html.Ul(li_elements),
+                ],
+                className="visible_object_div",
+            ),
+        )
+
+    return result
