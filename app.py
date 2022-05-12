@@ -1,153 +1,67 @@
-from itertools import count
-from dash import Dash, html, dcc, Input, Output
-
+# imports
 from datetime import datetime, timedelta
 
+import pytz
+from dash import Dash, Input, Output, dcc, html
+
+from config import CITIES_INFO, TIME_FORMAT_FOR_FRONT
+from helpers import _get_background_style_based_on_time
+
+# create dash app to work with
 app = Dash(__name__)
 
-COUNTRIES_AND_CITIES = {
-    "Georgia": [
-        "Tbilisi",
-        "Rustavi",
-        "Batumi",
-        "Kutaisi",
-        "Zugdidi",
-        "Telavi",
-    ],
-    "India": [
-        "Kavalur",
-        "Delhi",
-        "Bangalore",
-        "Hyderabad",
-        "Ahmedabad",
-        "Chennai",
-        "Kolkata",
-        "Surat",
-        "Pune",
-    ],
-}
 
-TIME_FORMAT_FOR_FRONT = "%d.%m.%Y %H:%M:%S"
-
-
-def _get_background_style_based_on_time(datetime_obj):
-    if 5 <= datetime_obj.hour <= 20:
-        # day
-        background_color = "white"
-        text_color = "black"
-    else:
-        # night
-        background_color = "black"
-        text_color = "white"
-
-    styles = {
-        "background": background_color,
-        "color": text_color,
-        "width": "100vw",
-        "height": "100vh",
-        "overflow": "hidden",
-        "position": "absolute",
-        "left": "0",
-        "top": "0",
-        "transition": "all ease-in-out 500ms",
-    }
-
-    # print(f"Returning {styles=}")
-
-    return styles
-
-
-def _get_current_time_in(country, city):
-    """
-    Temporary implementation, add real data later
-    """
-    if country == "Georgia":
-        res = datetime.today()
-
-        if city == "Rustavi":
-            res += timedelta(hours=5)
-
-        if city == "Kutaisi":
-            res -= timedelta(hours=5)
-
-    else:
-        if city == "Chennai":
-            res = datetime(2022, 5, 11, 0, 0)
-        else:
-            res = datetime.today() + timedelta(hours=12)
-
-    print(res, city)
-    return res
-
-
-app.layout = html.Div(
-    id="outer_div",
-    children=[
-        html.H1(
-            id="h1",
-            children="Select city and country to view results",
-            style={"textAlign": "center"},
-        ),
-        html.Div(
-            id="content",
+# define app/web page should look in browser
+app.layout = html.Div(  # outer div for everything that this app has
+    id="outer_div",  # id element, needed to identify it and change its style, like dark/white background
+    children=[  # all the following elements are children of current outer_div, so they are inside of outer_div element
+        # page header text
+        html.H1(id="h1", children="Select city and country to view results"),
+        html.Div(  # another div, but in previous div
+            id="content",  # id is needed to change style in assets/index.cee file
             children=[
-                html.Div(
-                    id="selections",
-                    children=[
-                        dcc.Dropdown(
-                            list(COUNTRIES_AND_CITIES.keys()),
-                            value=None,
-                            placeholder="Select Country",
-                            id="selected_country",
-                        ),
-                        dcc.Dropdown(
-                            options=[],
-                            value=None,
-                            placeholder="Select City",
-                            id="selected_city",
-                        ),
-                    ]
+                # actual dropdown on page
+                dcc.Dropdown(
+                    options=list(CITIES_INFO.keys()),  # options in dropdown
+                    value=None,  # selected by default when page loads(None means blank, or no selection)
+                    placeholder="Select City",
+                    id="selected_city",
                 ),
-                html.Br(),
-                html.H1(id="current_selections_text", style={"textAlign": "center"}),
-                html.Br(),
+                html.H1(id="current_selections_text"),
             ],
-            style={"width": "80%", "margin": "auto"},
         ),
     ],
 )
 
 
+# code after this will automatically run by Dash for us
 @app.callback(
-    Output(component_id="selected_city", component_property="options"),
-    Input(component_id="selected_country", component_property="value"),
-)
-def update_dropdown_list_of_cities_on_country_change(country):
-    return COUNTRIES_AND_CITIES.get(country, [])
-
-
-@app.callback(
+    # we want to change two elements on page
     Output(component_id="current_selections_text", component_property="children"),
     Output(component_id="outer_div", component_property="style"),
-    Input(component_id="selected_country", component_property="value"),
+    # every time when element with id selected_city changes (when we select different city)
     Input(component_id="selected_city", component_property="value"),
 )
-def update_selection_text(country, city):
-    city_time = _get_current_time_in(
-        country=country,
-        city=city,
-    )
+def handle_city_change(city):
 
-    if country and city and (city in COUNTRIES_AND_CITIES[country]):
-        output_1_text = (
-            f"Time in {city}, {country} is {city_time.strftime(TIME_FORMAT_FOR_FRONT)}"
-        )
+    # only show text if some city is selected
+    if city:
+        # get text to dispay
+        timezone_of_city = CITIES_INFO[city]
+
+        city_time = datetime.now().astimezone(pytz.timezone(timezone_of_city))
+
+        output_1_text = f"Time in {city} is {city_time.strftime(TIME_FORMAT_FOR_FRONT)}"
+
+        # get styles for city and time
+        output_2_styles = _get_background_style_based_on_time(city_time)
     else:
         output_1_text = ""
+        output_2_styles = _get_background_style_based_on_time(None)
 
-    # if city == "Zugdidi":
-    #     breakpoint()
-    output_2_styles = _get_background_style_based_on_time(city_time)
+    # what we return from this function, will change things that were defined after @app.callback(,
+    # output_1_text will change children element of element with id current_selections_text
+    # and output_2_styles will change styles of outer_div
 
     return output_1_text, output_2_styles
 

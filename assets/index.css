@@ -2,8 +2,19 @@ div[style*="background: black"] .Select-menu-outer * {
     color: black;
 }
 
-#selections{
+#selections {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-gap: 4px;
+}
+
+
+#selected_city {
+    width: 80%;
+    margin: auto;
+    margin-top: 20px;
+}
+
+h1 {
+    text-align: center;
 }
